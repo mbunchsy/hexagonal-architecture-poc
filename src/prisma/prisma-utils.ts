@@ -5,3 +5,7 @@ export function toNumber(
 ): number | undefined {
   return value != null ? value.toNumber() : undefined;
 }
+
+export function toDecimal(value: number): Decimal {
+  return new Decimal(value);
+}

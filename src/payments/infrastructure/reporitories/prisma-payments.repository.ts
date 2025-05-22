@@ -32,7 +32,8 @@ export function toPaymentDomain(payment: PaymentPrisma): Payment {
     id: payment.id.toString(),
     amount: toNumber(payment.amount),
     status: payment.status,
-    createdAt: payment.createdAt,
-    updatedAt: payment.updatedAt,
+    createdAt: payment.created_at,
+    updatedAt: payment.updated_at,
+    loanId: payment.loan_id,
   };
 }

@@ -1,1 +1,1 @@
-export * from './payments.controller';
+export * from './get-payments.controller';

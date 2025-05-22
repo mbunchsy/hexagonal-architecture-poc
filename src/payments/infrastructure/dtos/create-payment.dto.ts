@@ -6,9 +6,12 @@ export class CreatePaymentDto {
   @Min(0)
   amount: number;
 
+  loanId: string;
+
   toDomain(): CreatePaymentInput {
     return {
       amount: this.amount,
+      loanId: this.loanId,
     };
   }
 }

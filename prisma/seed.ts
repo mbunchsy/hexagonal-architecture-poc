@@ -1,48 +1,78 @@
-// prisma/seed.ts
-
 import { PrismaClient } from '@prisma/client';
 
-// initialize Prisma Client
 const prisma = new PrismaClient();
 
 async function main() {
-  await seedPayments();
+  await prisma.$transaction(async (tx) => {
+    const loan1 = await tx.loan.create({
+      data: {
+        principal_amount: 1000,
+        interest_rate: 0.05,
+        term_in_months: 12,
+        start_date: new Date('2025-06-01'),
+        due_day: 5,
+        remaining_debt: 1000,
+      },
+    });
+
+    const loan2 = await tx.loan.create({
+      data: {
+        principal_amount: 1500,
+        interest_rate: 0.07,
+        term_in_months: 6,
+        start_date: new Date('2025-06-15'),
+        due_day: 10,
+        remaining_debt: 1500,
+      },
+    });
+
+    const loan3 = await tx.loan.create({
+      data: {
+        principal_amount: 500,
+        interest_rate: 0.1,
+        term_in_months: 3,
+        start_date: new Date('2025-07-01'),
+        due_day: 1,
+        remaining_debt: 500,
+      },
+    });
+
+    const payments = await Promise.all([
+      tx.payment.create({
+        data: {
+          loan_id: loan1.id,
+          amount: 100,
+          status: 'COMPLETED',
+        },
+      }),
+      tx.payment.create({
+        data: {
+          loan_id: loan2.id,
+          amount: 250,
+          status: 'PENDING',
+        },
+      }),
+      tx.payment.create({
+        data: {
+          loan_id: loan3.id,
+          amount: 100,
+          status: 'FAILED',
+        },
+      }),
+    ]);
+
+    console.log('Loans and payments seeded:', {
+      loans: [loan1, loan2, loan3],
+      payments,
+    });
+  });
 }
 
-// create several example payments
-async function seedPayments() {
-  // create several example payments
-  const payments = await Promise.all([
-    prisma.payment.create({
-      data: {
-        amount: 100.5,
-        status: 'COMPLETED',
-      },
-    }),
-    prisma.payment.create({
-      data: {
-        amount: 75.25,
-        status: 'PENDING',
-      },
-    }),
-    prisma.payment.create({
-      data: {
-        amount: 200.0,
-        status: 'FAILED',
-      },
-    }),
-  ]);
-
-  console.log('Payments seeded:', payments);
-}
-
-// execute the main function
 main()
   .catch((e) => {
     console.error('Error seeding database:', e);
     process.exit(1);
   })
   .finally(async () => {
-    // close Prisma Client at the end
     await prisma.$disconnect();
   });

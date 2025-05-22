@@ -17,7 +17,7 @@ export class CreatePaymentService {
 
   private toBuild(input: CreatePaymentInput): CreatePaymentWithStatusInput {
     return {
-      amount: input.amount,
+      ...input,
       status: this.calculateStatus(),
     };
   }

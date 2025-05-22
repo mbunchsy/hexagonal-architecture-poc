@@ -14,9 +14,24 @@ datasource db {
 }
 
 model Payment {
-  id        Int      @id @default(autoincrement())
-  amount    Decimal
-  status    String   @db.Text
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  id         Int      @id @default(autoincrement())
+  amount     Decimal
+  status     String   @db.Text
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @updatedAt @db.Timestamp(6)
+  loan       Loan?    @relation(fields: [loan_id], references: [id])
+  loan_id    String?
+}
+
+model Loan {
+  id               String   @id @default(uuid())
+  principal_amount Float
+  interest_rate    Float
+  term_in_months   Int
+  start_date       DateTime
+  due_day          Int
+  remaining_debt   Float
+  created_at       DateTime @default(now())
+
+  payments Payment[]
 }
